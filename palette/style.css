@@ -15,7 +15,7 @@ body {
     background-color: #fff;
     width: 100vw;
     height: 100vh;
-    cursor: url(./images/tools_pencil.png), default;
+    cursor: default;
 }
 
 .top-menu {
@@ -154,7 +154,7 @@ body {
 }
 
 .work-area-left-panel-block-tools__item:nth-child(4):hover {
-    cursor: url(./images/tools_pencil.png), url(./images/tools_pencil.png), auto;
+    cursor: default;
     background-color: initial;
 }
 
@@ -185,14 +185,13 @@ body {
     border-radius: 50%;
 }
 
-.work-area-left-panel-block-colors__item:hover {
+.work-area-left-panel-block-colors__item:not(:first-of-type):hover {
     cursor: pointer;
     background-color: #a52a2a;
 }
 
-
 .work-area-left-panel-block-colors__item:nth-child(1) .work-area-left-panel-block-colors__color {
-    background-color: #c4c4c4;
+    background-color: #d3d3d3;
 }
 
 .work-area-left-panel-block-colors__item:nth-child(2) .work-area-left-panel-block-colors__color {
