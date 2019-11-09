@@ -4,6 +4,10 @@ body {
     font-family: 'Roboto Condensed', sans-serif;
 }
 
+.active {
+    background-color: #a52a2a;
+}
+
 .wrapper {
     max-width: 1440px;
     margin-left: auto;
@@ -11,6 +15,7 @@ body {
     background-color: #fff;
     width: 100vw;
     height: 100vh;
+    cursor: url(./images/tools_pencil.png), default;
 }
 
 .top-menu {
@@ -105,7 +110,7 @@ body {
 }
 
 .work-area-left-panel-block-tools__item {
-    width: 196px;
+    box-sizing: border-box;
     height: 48px;
     margin: 0 auto 8px;
     padding-left: 75px;
@@ -125,6 +130,7 @@ body {
 
 .work-area-left-panel-block-tools__item:hover {
     cursor: pointer;
+    background-color: #a52a2a;
 }
 
 .work-area-left-panel-block-tools__item:nth-child(1)::before {
@@ -132,15 +138,24 @@ body {
 }
 
 .work-area-left-panel-block-tools__item:nth-child(2)::before {
-    background: url("./images/tools_pick.png") no-repeat;
+    background: url("images/tools_picker.png") no-repeat;
 }
 
 .work-area-left-panel-block-tools__item:nth-child(3)::before {
-    background: url("./images/tools_move.png") no-repeat;
+    background: url("./images/tools_pencil.png") no-repeat;
+}
+
+.work-area-left-panel-block-tools__item:nth-child(4) {
+    opacity: 0.4;
 }
 
 .work-area-left-panel-block-tools__item:nth-child(4)::before {
     background: url("./images/tools_transform.png") no-repeat;
+}
+
+.work-area-left-panel-block-tools__item:nth-child(4):hover {
+    cursor: url(./images/tools_pencil.png), url(./images/tools_pencil.png), auto;
+    background-color: initial;
 }
 
 .work-area-left-panel-block-colors {
@@ -151,7 +166,7 @@ body {
 }
 
 .work-area-left-panel-block-colors__item {
-    width: 196px;
+    box-sizing: border-box;
     height: 48px;
     margin: 0 auto 8px;
     padding-left: 75px;
@@ -159,8 +174,7 @@ body {
     position: relative;
 }
 
-.work-area-left-panel-block-colors__item::before {
-    content: "";
+.work-area-left-panel-block-colors__color {
     position: absolute;
     display: block;
     height: 24px;
@@ -173,21 +187,23 @@ body {
 
 .work-area-left-panel-block-colors__item:hover {
     cursor: pointer;
+    background-color: #a52a2a;
 }
 
-.work-area-left-panel-block-colors__item:nth-child(1)::before {
+
+.work-area-left-panel-block-colors__item:nth-child(1) .work-area-left-panel-block-colors__color {
     background-color: #c4c4c4;
 }
 
-.work-area-left-panel-block-colors__item:nth-child(2)::before {
+.work-area-left-panel-block-colors__item:nth-child(2) .work-area-left-panel-block-colors__color {
     background-color: #41f795;
 }
 
-.work-area-left-panel-block-colors__item:nth-child(3)::before {
+.work-area-left-panel-block-colors__item:nth-child(3) .work-area-left-panel-block-colors__color {
     background-color: #f74141;
 }
 
-.work-area-left-panel-block-colors__item:nth-child(4)::before {
+.work-area-left-panel-block-colors__item:nth-child(4) .work-area-left-panel-block-colors__color {
     background-color: #41b6f7;
 }
 

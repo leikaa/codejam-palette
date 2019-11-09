@@ -22,16 +22,28 @@
     <div class="work-area">
         <div class="work-area-left-panel-block">
             <ul class="work-area-left-panel-block-tools">
-                <li class="work-area-left-panel-block-tools__item">Paint bucket</li>
-                <li class="work-area-left-panel-block-tools__item">Choose color</li>
-                <li class="work-area-left-panel-block-tools__item">Move</li>
-                <li class="work-area-left-panel-block-tools__item">Transform</li>
+                <li class="work-area-left-panel-block-tools__item" data-tool="bucket">Paint bucket</li>
+                <li class="work-area-left-panel-block-tools__item" data-tool="picker">Choose color</li>
+                <li class="work-area-left-panel-block-tools__item active" data-tool="pencil">Pencil</li>
+                <li class="work-area-left-panel-block-tools__item" data-tool="">Transform</li>
             </ul>
             <ul class="work-area-left-panel-block-colors">
-                <li class="work-area-left-panel-block-colors__item">Current color</li>
-                <li class="work-area-left-panel-block-colors__item">Prev color</li>
-                <li class="work-area-left-panel-block-colors__item">red</li>
-                <li class="work-area-left-panel-block-colors__item">blue</li>
+                <li class="work-area-left-panel-block-colors__item">
+                    <span class="work-area-left-panel-block-colors__color js-current"></span>
+                    <span>Current color</span>
+                </li>
+                <li class="work-area-left-panel-block-colors__item">
+                    <span class="work-area-left-panel-block-colors__color js-prev"></span>
+                    <span>Prev color</span>
+                </li>
+                <li class="work-area-left-panel-block-colors__item">
+                    <span class="work-area-left-panel-block-colors__color js-preset1"></span>
+                    <span>red</span>
+                </li>
+                <li class="work-area-left-panel-block-colors__item">
+                    <span class="work-area-left-panel-block-colors__color js-preset2"></span>
+                    <span>blue</span>
+                </li>
             </ul>
         </div>
         <div class="work-area-canvas-block">
