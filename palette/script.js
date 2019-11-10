@@ -64,14 +64,31 @@ window.onload = function () {
     let mouseCoords = { x:0, y:0 },
         draw = false;
 
+    const drawPixel = (e) => {
+        mouseCoords.x = e.offsetX === undefined ? Math.round(e.layerX / pixelSize) : Math.round(e.offsetX / pixelSize);
+        mouseCoords.y = e.offsetY === undefined ? Math.round(e.layerY / pixelSize) : Math.round(e.offsetY / pixelSize);
+
+        ctx.fillStyle = colorToFillTemplate;
+        ctx.fillRect(mouseCoords.x * pixelSize, mouseCoords.y * pixelSize, pixelSize, pixelSize);
+
+        columns[+mouseCoords.x][+mouseCoords.y] = colorToFillTemplate;
+        let storageData = JSON.stringify(columns);
+        localStorage.setItem('canvasImage', storageData);
+    };
+
     canvas.addEventListener('click', (e) => {
         if (tool === 'bucket') {
-            for (let i = 0; i < columnsCount; i++) {
-                for (let j = 0; j < rowsCount; j++) {
+            columns.forEach((row, i) => {
+                row.forEach((pixelColor, j) => {
                     ctx.fillStyle = colorToFillTemplate;
                     ctx.fillRect(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
-                }
-            }
+
+                    columns[i][j] = colorToFillTemplate;
+                });
+            });
+
+            let storageData = JSON.stringify(columns);
+            localStorage.setItem('canvasImage', storageData);
         }
 
         if (tool === 'picker') {
@@ -93,6 +110,10 @@ window.onload = function () {
             document.querySelector('.js-prev').style.setProperty('background-color', colorSet.prev);
             colorToFillTemplate = pixelColor;
         }
+
+        if (tool === 'pencil') {
+            drawPixel(e);
+        }
     });
 
     canvas.addEventListener('mousedown', () => {
@@ -103,15 +124,7 @@ window.onload = function () {
 
     canvas.addEventListener("mousemove", function(e){
         if (tool === 'pencil' && draw === true) {
-            mouseCoords.x = e.offsetX === undefined ? Math.round(e.layerX / pixelSize) : Math.round(e.offsetX / pixelSize);
-            mouseCoords.y = e.offsetY === undefined ? Math.round(e.layerY / pixelSize) : Math.round(e.offsetY / pixelSize);
-
-            ctx.fillStyle = colorToFillTemplate;
-            ctx.fillRect(mouseCoords.x * pixelSize, mouseCoords.y * pixelSize, pixelSize, pixelSize);
-
-            columns[+mouseCoords.x][+mouseCoords.y] = colorToFillTemplate;
-            let storageData = JSON.stringify(columns);
-            localStorage.setItem('canvasImage', storageData);
+            drawPixel(e);
         }
     });
 
