@@ -9,15 +9,17 @@ window.onload = function () {
           rowsCount = canvasFrameSize / pixelSize;
     let colorToFillTemplate = defaultColor;
 
+    // set canvas grid
     let columns = [];
     for (let i = 0; i < columnsCount; i++) {
-        let arr = [];
+        let row = [];
         for (let j = 0; j < rowsCount; j++) {
-            arr.push('transparent');
+            row.push('transparent');
         }
-        columns.push(arr);
+        columns.push(row);
     }
 
+    // check if canvas already exists
     if (localStorage.getItem('canvasImage')) {
         columns = JSON.parse(localStorage.getItem('canvasImage'));
         columns.forEach((row, i) => {
@@ -28,7 +30,7 @@ window.onload = function () {
         })
     }
 
-    // get color section
+    // color state section
     const colorSet = {
         current: window.getComputedStyle(document.querySelector('.js-current')).getPropertyValue('background-color'),
         prev: window.getComputedStyle(document.querySelector('.js-prev')).getPropertyValue('background-color')
@@ -60,7 +62,7 @@ window.onload = function () {
         });
     });
 
-    // canvas filling
+    // canvas filling according to chosen tools
     let mouseCoords = { x:0, y:0 },
         draw = false;
 
@@ -146,4 +148,31 @@ window.onload = function () {
     canvas.addEventListener('mouseleave', () => {
         document.querySelector('.wrapper').style.cursor = 'default';
     });
+
+    // keyboard section
+    const changeActiveTabToNecessaryOnKeyPressed = (tabName) => {
+        document.querySelectorAll('.work-area-left-panel-block-tools__item').forEach((value) => {
+            value.classList.remove('active');
+
+            if (value.getAttribute('data-tool') === tabName) {
+                value.classList.add('active');
+                tool = tabName;
+            }
+        });
+    };
+
+    document.addEventListener('keydown', (e) => {
+        if (e.code === 'KeyB') {
+            changeActiveTabToNecessaryOnKeyPressed('bucket');
+            document.querySelector('.wrapper').style.cursor = `url(./palette/images/tools_${tool}.png), default`;
+        }
+        if (e.code === 'KeyP') {
+            changeActiveTabToNecessaryOnKeyPressed('pencil');
+            document.querySelector('.wrapper').style.cursor = 'crosshair';
+        }
+        if (e.code === 'KeyC') {
+            changeActiveTabToNecessaryOnKeyPressed('picker');
+            document.querySelector('.wrapper').style.cursor = 'crosshair';
+        }
+    })
 };
