@@ -1,5 +1,5 @@
 window.onload = () => {
-  // canvas section
+  // canvas init section
   const canvas = document.querySelector('.work-area-canvas-block__canvas');
   const ctx = canvas.getContext('2d');
   const canvasFrameSize = 512;
@@ -65,6 +65,7 @@ window.onload = () => {
   // canvas filling according to chosen tools
   const mouseCoords = { x: 0, y: 0 };
   let draw = false;
+  let pixelColor;
 
   const drawPixel = (e) => {
     mouseCoords.x = e.offsetX === undefined ? Math.round(e.layerX / pixelSize)
@@ -80,14 +81,29 @@ window.onload = () => {
     localStorage.setItem('canvasImage', storageData);
   };
 
+  const getPixelColor = (e) => {
+    mouseCoords.x = e.offsetX === undefined ? e.layerX : e.offsetX;
+    mouseCoords.y = e.offsetY === undefined ? e.layerY : e.offsetY;
+
+    const p = ctx.getImageData(mouseCoords.x, mouseCoords.y, 1, 1).data;
+    if (p[0] === 0 && p[1] === 0 && p[2] === 0 && p[3] === 0) {
+      pixelColor = defaultColor;
+    } else {
+      pixelColor = `rgb(${p[0]}, ${p[1]}, ${p[2]})`;
+    }
+  };
+
   canvas.addEventListener('click', (e) => {
     if (tool === 'bucket') {
-      columns.forEach((row, i) => {
-        row.forEach((pixelColor, j) => {
-          ctx.fillStyle = colorToFillTemplate;
-          ctx.fillRect(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
+      getPixelColor(e);
 
-          columns[i][j] = colorToFillTemplate;
+      columns.forEach((row, i) => {
+        row.forEach((currentPixelColor, j) => {
+          if (currentPixelColor === pixelColor) {
+            ctx.fillStyle = colorToFillTemplate;
+            ctx.fillRect(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
+            columns[i][j] = colorToFillTemplate;
+          }
         });
       });
 
@@ -96,17 +112,7 @@ window.onload = () => {
     }
 
     if (tool === 'picker') {
-      mouseCoords.x = e.offsetX === undefined ? e.layerX : e.offsetX;
-      mouseCoords.y = e.offsetY === undefined ? e.layerY : e.offsetY;
-
-      const p = ctx.getImageData(mouseCoords.x, mouseCoords.y, 1, 1).data;
-      let pixelColor;
-
-      if (p[0] === 0 && p[1] === 0 && p[2] === 0 && p[3] === 0) {
-        pixelColor = defaultColor;
-      } else {
-        pixelColor = `rgb(${p[0]}, ${p[1]}, ${p[2]})`;
-      }
+      getPixelColor(e);
 
       colorSet.prev = colorSet.current;
       colorSet.current = pixelColor;
@@ -138,7 +144,7 @@ window.onload = () => {
     }
   });
 
-  // change cursor in canvas
+  // change cursor in canvas field
   canvas.addEventListener('mouseenter', () => {
     if (tool === 'bucket') {
       document.querySelector('.wrapper').style.cursor = `url(./palette/images/tools_${tool}.png), default`;
@@ -151,7 +157,7 @@ window.onload = () => {
     document.querySelector('.wrapper').style.cursor = 'default';
   });
 
-  // keyboard section
+  // keyboard bind section
   const changeActiveTabToNecessaryOnKeyPressed = (tabName) => {
     document.querySelectorAll('.work-area-left-panel-block-tools__item').forEach((value) => {
       value.classList.remove('active');
@@ -177,4 +183,4 @@ window.onload = () => {
       document.querySelector('.wrapper').style.cursor = 'crosshair';
     }
   });
-}
+};
