@@ -3,14 +3,29 @@ window.onload = function () {
     const canvas = document.querySelector('.work-area-canvas-block__canvas'),
           ctx = canvas.getContext('2d'),
           canvasFrameSize = 512,
-          columns = [],
-          rows = [];
-    let pixelSize = 4,
-        colorToFillTemplate = 'rgb(196, 196, 196)';
+          defaultColor = 'rgb(196, 196, 196)',
+          pixelSize = 4,
+          columnsCount = canvasFrameSize / pixelSize,
+          rowsCount = canvasFrameSize / pixelSize;
+    let colorToFillTemplate = defaultColor;
 
-    for (let i = 0; i < canvasFrameSize / pixelSize; i++) {
-        columns.push(i);
-        rows.push(i);
+    let columns = [];
+    for (let i = 0; i < columnsCount; i++) {
+        let arr = [];
+        for (let j = 0; j < rowsCount; j++) {
+            arr.push('transparent');
+        }
+        columns.push(arr);
+    }
+
+    if (localStorage.getItem('canvasImage')) {
+        columns = JSON.parse(localStorage.getItem('canvasImage'));
+        columns.forEach((row, i) => {
+            row.forEach((pixelColor, j) => {
+                ctx.fillStyle = pixelColor;
+                ctx.fillRect(i*pixelSize, j*pixelSize, pixelSize, pixelSize);
+            })
+        })
     }
 
     // get color section
@@ -42,50 +57,66 @@ window.onload = function () {
             });
             this.classList.add('active');
             tool = this.getAttribute('data-tool');
-
-            if (tool === 'picker') {
-                document.querySelector('.wrapper').style.cursor = 'crosshair';
-            } else {
-                document.querySelector('.wrapper').style.cursor = 'default';
-            }
         });
     });
 
     // canvas filling
-    let mouseCoords = { x:0, y:0},
+    let mouseCoords = { x:0, y:0 },
         draw = false;
 
-    canvas.addEventListener('click', () => {
+    canvas.addEventListener('click', (e) => {
         if (tool === 'bucket') {
-            columns.forEach((columnValue, i) => {
-                rows.forEach((rowValue, j) => {
+            for (let i = 0; i < columnsCount; i++) {
+                for (let j = 0; j < rowsCount; j++) {
                     ctx.fillStyle = colorToFillTemplate;
                     ctx.fillRect(i * pixelSize, j * pixelSize, pixelSize, pixelSize);
-                });
-            });
+                }
+            }
+        }
+
+        if (tool === 'picker') {
+            mouseCoords.x = e.offsetX === undefined ? e.layerX : e.offsetX;
+            mouseCoords.y = e.offsetY === undefined ? e.layerY : e.offsetY;
+
+            let p = ctx.getImageData(mouseCoords.x, mouseCoords.y, 1, 1).data;
+            let pixelColor;
+
+            if (p[0] === 0 && p[1] === 0 && p[2] === 0 && p[3] === 0) {
+                pixelColor = defaultColor;
+            } else {
+                pixelColor = `rgb(${p[0]}, ${p[1]}, ${p[2]})`
+            }
+
+            colorSet.prev = colorSet.current;
+            colorSet.current = pixelColor;
+            document.querySelector('.js-current').style.setProperty('background-color', colorSet.current);
+            document.querySelector('.js-prev').style.setProperty('background-color', colorSet.prev);
+            colorToFillTemplate = pixelColor;
         }
     });
 
-    canvas.addEventListener('mousedown', (e) => {
+    canvas.addEventListener('mousedown', () => {
         if (tool === 'pencil') {
-            ctx.beginPath();
             draw = true;
         }
     });
 
     canvas.addEventListener("mousemove", function(e){
         if (tool === 'pencil' && draw === true) {
-            mouseCoords.x = e.offsetX === undefined ? e.layerX : e.offsetX;
-            mouseCoords.y = e.offsetY === undefined ? e.layerY : e.offsetY;
-            ctx.lineTo(mouseCoords.x, mouseCoords.y);
-            ctx.strokeStyle = colorToFillTemplate;
-            ctx.stroke();
+            mouseCoords.x = e.offsetX === undefined ? Math.round(e.layerX / pixelSize) : Math.round(e.offsetX / pixelSize);
+            mouseCoords.y = e.offsetY === undefined ? Math.round(e.layerY / pixelSize) : Math.round(e.offsetY / pixelSize);
+
+            ctx.fillStyle = colorToFillTemplate;
+            ctx.fillRect(mouseCoords.x * pixelSize, mouseCoords.y * pixelSize, pixelSize, pixelSize);
+
+            columns[+mouseCoords.x][+mouseCoords.y] = colorToFillTemplate;
+            let storageData = JSON.stringify(columns);
+            localStorage.setItem('canvasImage', storageData);
         }
     });
 
-    canvas.addEventListener("mouseup", function(e){
+    canvas.addEventListener("mouseup", function(){
         if (tool === 'pencil') {
-            ctx.closePath();
             draw = false;
         }
     });
@@ -94,16 +125,12 @@ window.onload = function () {
     canvas.addEventListener('mouseenter', () => {
         if (tool === 'bucket') {
             document.querySelector('.wrapper').style.cursor = `url(./palette/images/tools_${tool}.png), default`;
-        } else if (tool === 'pencil') {
+        } else {
             document.querySelector('.wrapper').style.cursor = 'crosshair';
         }
     });
 
     canvas.addEventListener('mouseleave', () => {
-        if (tool !== 'picker') {
-            document.querySelector('.wrapper').style.cursor = 'default';
-        }
+        document.querySelector('.wrapper').style.cursor = 'default';
     });
-
-    localStorage.setItem('myCat', 'Tom');
 };
