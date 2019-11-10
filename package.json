@@ -5,7 +5,8 @@
   "main": "./palette/script.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "./node_modules/.bin/eslint ./palette/script.js"
+    "lint": "./node_modules/.bin/eslint ./palette/script.js",
+    "fix": "./node_modules/.bin/eslint ./palette/script.js --fix"
   },
   "repository": {
     "type": "git",
